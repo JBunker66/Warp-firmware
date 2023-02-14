@@ -45,3 +45,4 @@ typedef enum
 int	devSSD1331init(void);
 int 	devSSD1331Line(uint8_t x1, uint8_t x2, uint8_t y1, uint8_t y2);
 int 	devSSD1331Smile(void);
+int 	devSSD1331Green(void);

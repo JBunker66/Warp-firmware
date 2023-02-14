@@ -2000,7 +2000,8 @@ main(void)
 	#endif
         
 	devSSD1331init();
-	devSSD1331Smile();
+	// devSSD1331Smile();
+	devSSD1331Green();
 	while (1)
 	{
 		/*

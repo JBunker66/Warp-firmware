@@ -196,3 +196,24 @@ devSSD1331Smile(void)
 
 	return 0;
 }
+
+int
+devSSD1331Green(void)
+{
+   writeCommand(kSSD1331CommandDRAWRECT);
+
+    writeCommand(0); // Start x 0 - 95
+    writeCommand(0); // Start y 0 - 63
+    writeCommand(95); // End x
+    writeCommand(63); // End y
+
+    writeCommand(0); // Red outline
+    writeCommand(255);   // Green outline
+    writeCommand(0);   // Blue outline 
+
+    writeCommand(0); // Red fill
+    writeCommand(255);   // Green fill
+    writeCommand(0);   // Blue fill
+
+    return 0;
+}
