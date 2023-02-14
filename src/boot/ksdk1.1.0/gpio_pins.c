@@ -59,6 +59,25 @@ gpio_output_pin_user_config_t	outputPins[] = {
 			.config.driveStrength = kPortLowDriveStrength,
 		},
 
+			{
+			.pinName = kWarpPinUnusedPTA12,
+			.config.outputLogic = 1,
+			.config.slewRate = kPortFastSlewRate,
+			.config.driveStrength = kPortHighDriveStrength,
+		},
+		{
+			.pinName = kWarpPinUnusedPTB0,
+			.config.outputLogic = 1,
+			.config.slewRate = kPortFastSlewRate,
+			.config.driveStrength = kPortHighDriveStrength,
+		},
+        {
+			.pinName = kWarpPinUnusedPTB13,
+			.config.outputLogic = 1,
+			.config.slewRate = kPortFastSlewRate,
+			.config.driveStrength = kPortHighDriveStrength,
+		},
+
 		#if (WARP_BUILD_ENABLE_DEVIS25xP)
 		{
 			.pinName = kWarpPinIS25xP_SPI_nCS,
@@ -166,7 +185,24 @@ gpio_output_pin_user_config_t	outputPins[] = {
 			.config.driveStrength = kPortLowDriveStrength,
 		},
 	#elif (WARP_BUILD_ENABLE_FRDMKL03)
-
+			{
+			.pinName = kWarpPinUnusedPTA12,
+			.config.outputLogic = 1,
+			.config.slewRate = kPortFastSlewRate,
+			.config.driveStrength = kPortHighDriveStrength,
+		},
+		{
+			.pinName = kWarpPinUnusedPTB0,
+			.config.outputLogic = 1,
+			.config.slewRate = kPortFastSlewRate,
+			.config.driveStrength = kPortHighDriveStrength,
+		},
+        {
+			.pinName = kWarpPinUnusedPTB13,
+			.config.outputLogic = 1,
+			.config.slewRate = kPortFastSlewRate,
+			.config.driveStrength = kPortHighDriveStrength,
+		},
 	#endif
 
 	{
