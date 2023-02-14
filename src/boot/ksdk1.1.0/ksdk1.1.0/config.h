@@ -41,22 +41,18 @@
 #define		WARP_BUILD_DISABLE_SUPPLIES_BY_DEFAULT		0
 
 /*
- *	NOTE: The choice of WARP_BUILD_ENABLE_GLAUX_VARIANT is defined via the Makefile build rules
- *	(via the CMakeList-*).
- *
+ *	NOTE: The choice of WARP_BUILD_ENABLE_GLAUX_VARIANT is defined via the Makefile build rules.
  *	The commented line below should never be uncommented. It is just here to stress a point that
  *	you shouldn't try to enable the Glaux build in this way.
  */
-//#define		WARP_BUILD_ENABLE_GLAUX_VARIANT			0
+//#define		WARP_BUILD_ENABLE_GLAUX_VARIANT			1
 
 /*
- *	NOTE: The choice of WARP_BUILD_ENABLE_GLAUX_VARIANT is defined via the Makefile build rules
- *	(via the CMakeList-*).
- *
- *	The commented line below should never be uncommented. It is just here to stress a point that
- *	you shouldn't try to enable the Glaux build in this way.
+ *	Define this here to activate FRDMKL03-specific behavior. Unlike the Glaux
+ *	build variant above, we currently require users wanting to build for the
+ *	KL03 to manually set this here.
  */
-//#define		WARP_BUILD_ENABLE_FRDMKL03			0
+#define		WARP_BUILD_ENABLE_FRDMKL03			1
 
 /*
  *	Force the required configuration if WARP_BUILD_ENABLE_GLAUX_VARIANT is set
@@ -109,11 +105,11 @@
 	/*
 	 *	Otherwise: Edit these to set which code paths are activated in the firmware compilation
 	 */
-	#define		WARP_BUILD_ENABLE_DEVADXL362		0
+	#define		WARP_BUILD_ENABLE_DEVADXL362		1
 	#define		WARP_BUILD_ENABLE_DEVAMG8834		0
 	#define		WARP_BUILD_ENABLE_DEVAS7262		0
 	#define		WARP_BUILD_ENABLE_DEVAS7263		0
-	#define		WARP_BUILD_ENABLE_DEVBGX		0
+	#define		WARP_BUILD_ENABLE_DEVBGX		1
 	#define		WARP_BUILD_ENABLE_DEVBME680		0
 	#define		WARP_BUILD_ENABLE_DEVBMX055		0
 	#define		WARP_BUILD_ENABLE_DEVCCS811		0
@@ -125,12 +121,11 @@
 	#define		WARP_BUILD_ENABLE_DEVL3GD20H		0
 	#define		WARP_BUILD_ENABLE_DEVLPS25H		0
 	#define		WARP_BUILD_ENABLE_DEVMAG3110		0
-	#define		WARP_BUILD_ENABLE_DEVMMA8451Q		1
+	#define		WARP_BUILD_ENABLE_DEVMMA8451Q		0
 	#define		WARP_BUILD_ENABLE_DEVRV8803C7		0
 	#define		WARP_BUILD_ENABLE_DEVSI4705		0
 	#define		WARP_BUILD_ENABLE_DEVSI7021		0
 	#define		WARP_BUILD_ENABLE_DEVTCS34725		0
-        #define  	WARP_BUILD_ENABLE_DEVSSD1331            1
 #endif
 
 typedef enum
