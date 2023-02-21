@@ -181,6 +181,11 @@
 	volatile WarpSPIDeviceState  			deviceSSD1331State;
 #endif
 
+#if (WARP_BUILD_ENABLE_DEVAINA219)
+        #include "devINA219.h"
+        volatile WarpI2CDeviceState                     deviceINA219State;
+#endif
+
 volatile i2c_master_state_t				i2cMasterState;
 volatile spi_master_state_t				spiMasterState;
 volatile spi_master_user_config_t			spiUserConfig;
@@ -1667,6 +1672,10 @@ main(void)
 	#if (WARP_BUILD_ENABLE_DEVAS7263)
 		initAS7263(	0x49	/* i2cAddress */,	kWarpDefaultSupplyVoltageMillivoltsAS7263	);
 	#endif
+	
+	#if (WARP_BUILD_ENABLE_DEVINA219)
+		initINA219(	0x40	/* i2cAddress */,	kWarpDefaultSupplyVoltageMillivoltsMMA8451Q	);
+	#endif
 
 	#if (WARP_BUILD_ENABLE_DEVRV8803C7)
 		initRV8803C7(	0x32	/* i2cAddress */,					kWarpDefaultSupplyVoltageMillivoltsRV8803C7	);
@@ -2001,7 +2010,7 @@ main(void)
         
 	devSSD1331init();
 	// devSSD1331Smile();
-	devSSD1331Green();
+	// :devSSD1331Green();
 	while (1)
 	{
 		/*
