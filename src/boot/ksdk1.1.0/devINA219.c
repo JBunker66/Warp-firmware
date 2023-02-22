@@ -1,5 +1,5 @@
 #include <stdlib.h>
-
+#include <math.h>
 /*
  *	config.h needs to come first
  */
@@ -62,7 +62,10 @@ writeSensorRegisterINA219(uint8_t deviceRegister, uint8_t payload)
 		.address = deviceINA219State.i2cAddress,
 		.baudRate_kbps = gWarpI2cBaudRateKbps
 	};
-
+	if(payload == 0xFFFF)
+	{
+		return kWarpStatusBadDeviceCommand;
+	}
 	warpScaleSupplyVoltage(deviceINA219State.operatingVoltageMillivolts);
 	commandByte[0] = deviceRegister;
 	// Need two as two bytes received 
@@ -141,7 +144,7 @@ readSensorRegisterINA219(uint8_t deviceRegister)
 							&slave,
 							cmdBuf,
 							1,
-							(uint8_t *)deviceMMA8451QState.i2cBuffer,
+							(uint8_t *)deviceINA219State.i2cBuffer,
 							2,
 							gWarpI2cTimeoutMilliseconds);
 
@@ -180,8 +183,8 @@ printSensorDataINA219(bool hexModeFlag)
 
 	// kWarpSensorOutputRegisterINA219Config
 	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219Config); 
-	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
 	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
 
 
@@ -205,8 +208,8 @@ printSensorDataINA219(bool hexModeFlag)
 
 	// kWarpSensorOutputRegisterINA219ShuntV
 	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219ShuntV); 
-	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
 	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
 
 
@@ -229,8 +232,8 @@ printSensorDataINA219(bool hexModeFlag)
 
 	// kWarpSensorOutputRegisterINA219BusV
 	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219BusV);
-	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
 	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
 
 
@@ -254,8 +257,8 @@ printSensorDataINA219(bool hexModeFlag)
 	
 	// kWarpSensorOutputRegisterINA219Current
 	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219Current);
-	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
 	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
 
 
@@ -278,8 +281,8 @@ printSensorDataINA219(bool hexModeFlag)
 
 	// kWarpSensorOutputRegisterINA219Power
 	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219Power);
-	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
 	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
 
 
@@ -303,8 +306,8 @@ printSensorDataINA219(bool hexModeFlag)
 
 	// kWarpSensorOutputRegisterINA219Calibration
 	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219Calibration);
-	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
 	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
 
 
@@ -325,4 +328,29 @@ printSensorDataINA219(bool hexModeFlag)
 		}
 	}
 
+}
+
+float
+currentLSB(float vShuntMax, float rShunt, float maxIExpected)
+{
+	float maxPossibleI, minLSB, maxLSB, Current_LSB;
+
+	maxPossibleI = vShuntMax/rShunt;
+	if (maxIExpected > maxPossibleI){
+		return 0xFFFF; // Hard code this to mean error
+	}
+	minLSB = maxIExpected/32767;
+	maxLSB = maxIExpected/4096;
+	Current_LSB = (19*minLSB + maxLSB)/20;
+
+	return Current_LSB;
+}
+
+uint16_t
+calibrationReg(float currentLSB, float rShunt)
+{
+	uint16_t calibrationRegister;
+	calibrationRegister = floor(0.04096/(currentLSB*rShunt));
+
+	return calibrationRegister;
 }

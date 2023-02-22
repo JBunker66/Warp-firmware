@@ -3,5 +3,7 @@ WarpStatus	readSensorRegisterINA219(uint8_t deviceRegister);
 WarpStatus	writeSensorRegisterINA219(uint8_t deviceRegister, uint8_t payload);
 WarpStatus	configureSensorINA219(uint16_t payload_Config, uint16_t payload_Calibration);
 void		printSensorDataINA219(bool hexModeFlag);
+float           currentLSB(float vShuntMax, float rShunt, float maxIExpected);
+uint16_t        calibrationReg(float currentLSB, float rShunt);
 
 // Might need to define a few enums for vars for data translation 
