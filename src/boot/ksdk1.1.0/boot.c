@@ -2008,24 +2008,20 @@ main(void)
 		}
 	#endif
         
-	devSSD1331init();
-	float    INA291LSB;
-	uint16_t configRegINA219;
+	// devSSD1331init();
 	WarpStatus INA219Status;
-	INA291LSB = currentLSB(3,10000,0.00025);
-	configRegINA219 = calibrationReg(INA291LSB, 10000);
-	warpPrint("Config Register 0x%02x", configRegINA219);
-	INA219Status = configureSensorINA219(0x199F,configRegINA219);
+	// Set two different configs
+	INA219Status = configureSensorINA219(configRegINA219,calibrationRegINA219);
 	if (status != kWarpStatusOK)
-        {
-        	warpPrint("Error\n");
-        }
+    {
+        warpPrint("Error\n");
+    }
 
 	// devSSD1331Smile();
-	// :devSSD1331Green();
-	while(1)
+	// devSSD1331Green();
+	for(size_t i; i < 1000; i++)
 	{
-		printSensorDataINA219(1);	
+		printCurrentuAINA219();	
 	}
 	while (1)
 	{

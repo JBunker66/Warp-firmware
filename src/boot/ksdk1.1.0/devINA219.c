@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <math.h>
 /*
  *	config.h needs to come first
  */
@@ -38,7 +37,7 @@ initINA219(const uint8_t i2cAddress, uint16_t operatingVoltageMillivolts)
 }
 
 WarpStatus
-writeSensorRegisterINA219(uint8_t deviceRegister, uint8_t payload)
+writeSensorRegisterINA219(uint8_t deviceRegister, uint16_t payload)
 {
 	uint8_t		payloadByte[2], commandByte[1];
 	i2c_status_t	status;
@@ -137,7 +136,21 @@ readSensorRegisterINA219(uint8_t deviceRegister)
 
 	warpScaleSupplyVoltage(deviceINA219State.operatingVoltageMillivolts);
 	cmdBuf[0] = deviceRegister;
-	warpEnableI2Cpins(); //got to here  
+	warpEnableI2Cpins();
+
+	status = I2C_DRV_MasterSendDataBlocking(  // Writes the pointer
+							0 /* I2C instance */,
+							&slave,
+							cmdBuf,
+							1,
+							NULL,
+							0,
+							gWarpI2cTimeoutMilliseconds);
+							
+	if (status != kStatus_I2C_Success)
+	{
+		return kWarpStatusDeviceCommunicationFailed;
+	}  
 
 	status = I2C_DRV_MasterReceiveDataBlocking(
 							0 /* I2C peripheral instance */,
@@ -162,7 +175,7 @@ printSensorDataINA219(bool hexModeFlag)
 
 	uint16_t	readSensorRegisterValueLSB;
 	uint16_t	readSensorRegisterValueMSB;
-	int16_t		readSensorRegisterValueCombined;
+	uint16_t		readSensorRegisterValueCombined;
 	WarpStatus	i2cReadStatus;
 
 
@@ -330,27 +343,25 @@ printSensorDataINA219(bool hexModeFlag)
 
 }
 
-float
-currentLSB(float vShuntMax, float rShunt, float maxIExpected)
+
+WarpStatus
+printCurrentuAINA219(void)
 {
-	float maxPossibleI, minLSB, maxLSB, Current_LSB;
 
-	maxPossibleI = vShuntMax/rShunt;
-	if (maxIExpected > maxPossibleI){
-		return 0xFFFF; // Hard code this to mean error
-	}
-	minLSB = maxIExpected/32767;
-	maxLSB = maxIExpected/4096;
-	Current_LSB = (19*minLSB + maxLSB)/20;
+	uint16_t	readSensorRegisterValueLSB;
+	uint16_t	readSensorRegisterValueMSB;
+	uint16_t	readSensorRegisterValueCombined;
+	uint32_t	currentReadable;
+	WarpStatus	i2cReadStatus;
 
-	return Current_LSB;
+	// kWarpSensorOutputRegisterINA219Current - Note assumes bit 15 is zero 
+	i2cReadStatus = readSensorRegisterINA219(kWarpSensorOutputRegisterINA219Current);
+	readSensorRegisterValueMSB = deviceINA219State.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceINA219State.i2cBuffer[1];
+	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 8) | (readSensorRegisterValueLSB & 0xFF);
+
+	currentReadable = currentLSBINA219uA*readSensorRegisterValueCombined;
+	warpPrint(" %d,",currentReadable); // Note this is to make compatable with CSV for later
+	return i2cReadStatus;
 }
 
-uint16_t
-calibrationReg(float currentLSB, float rShunt)
-{
-	uint16_t calibrationRegister;
-	calibrationRegister = floor(0.04096/(currentLSB*rShunt));
-
-	return calibrationRegister;
-}
