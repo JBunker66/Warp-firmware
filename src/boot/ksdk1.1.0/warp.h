@@ -256,8 +256,8 @@ typedef enum
 	kWarpSensorOutputRegisterINA219Config				= 0x00,
 	kWarpSensorOutputRegisterINA219ShuntV				= 0x01,
 	kWarpSensorOutputRegisterINA219BusV		                = 0x02,
-        kWarpSensorOutputRegisterINA219Current		                = 0x03,
-	kWarpSensorOutputRegisterINA219Power	                        = 0x04,
+        kWarpSensorOutputRegisterINA219Power		                = 0x03,
+	kWarpSensorOutputRegisterINA219Current	                        = 0x04,
 	kWarpSensorOutputRegisterINA219Calibration	                = 0x05,
 
 

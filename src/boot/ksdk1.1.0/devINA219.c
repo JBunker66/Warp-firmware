@@ -80,6 +80,8 @@ writeSensorRegisterINA219(uint8_t deviceRegister, uint16_t payload)
 							payloadByte,
 							2,
 							gWarpI2cTimeoutMilliseconds);
+	OSA_TimeDelay(10);
+
 	if (status != kStatus_I2C_Success)
 	{
 		return kWarpStatusDeviceCommunicationFailed;
@@ -104,6 +106,55 @@ configureSensorINA219(uint16_t payload_Config, uint16_t payload_Calibration) // 
 							);
 
 	return (i2cWriteStatus1 | i2cWriteStatus2);
+}
+
+WarpStatus
+setRegisterPointerINA219(uint8_t deviceRegister)
+{
+	uint8_t		cmdBuf[1] = {0xFF};
+	i2c_status_t	status;
+	USED(2);
+
+	switch (deviceRegister)
+	{
+		case 0x00: case 0x01: case 0x02: case 0x03:
+		case 0x04: case 0x05:
+		{
+			/* OK */
+			break;
+		}
+
+		default:
+		{
+			return kWarpStatusBadDeviceCommand;
+		}
+	}
+
+	i2c_device_t slave =
+	{
+		.address = deviceINA219State.i2cAddress,
+		.baudRate_kbps = gWarpI2cBaudRateKbps
+	};
+
+	warpScaleSupplyVoltage(deviceINA219State.operatingVoltageMillivolts);
+	cmdBuf[0] = deviceRegister;
+	warpEnableI2Cpins();
+
+	status = I2C_DRV_MasterSendDataBlocking(  // Writes the pointer
+							0 /* I2C instance */,
+							&slave,
+							cmdBuf,
+							1,
+							NULL,
+							0,
+							gWarpI2cTimeoutMilliseconds);
+
+	if (status != kStatus_I2C_Success)
+	{
+		return kWarpStatusDeviceCommunicationFailed;
+	}
+
+	return kWarpStatusOK;
 }
 
 WarpStatus
@@ -136,21 +187,7 @@ readSensorRegisterINA219(uint8_t deviceRegister)
 
 	warpScaleSupplyVoltage(deviceINA219State.operatingVoltageMillivolts);
 	cmdBuf[0] = deviceRegister;
-	warpEnableI2Cpins();
-
-	status = I2C_DRV_MasterSendDataBlocking(  // Writes the pointer
-							0 /* I2C instance */,
-							&slave,
-							cmdBuf,
-							1,
-							NULL,
-							0,
-							gWarpI2cTimeoutMilliseconds);
-							
-	if (status != kStatus_I2C_Success)
-	{
-		return kWarpStatusDeviceCommunicationFailed;
-	}  
+	warpEnableI2Cpins();  
 
 	status = I2C_DRV_MasterReceiveDataBlocking(
 							0 /* I2C peripheral instance */,

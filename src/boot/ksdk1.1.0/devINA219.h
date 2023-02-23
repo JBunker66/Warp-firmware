@@ -6,4 +6,4 @@ void		printSensorDataINA219(bool hexModeFlag);
 
 #define currentLSBINA219uA      10 // This is a very nice number
 #define calibrationRegINA219    0xA000
-#define configRegINA219         0x199F
+#define configRegINA219         0x399F

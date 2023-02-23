@@ -2008,18 +2008,27 @@ main(void)
 		}
 	#endif
         
-	// devSSD1331init();
+	devSSD1331init();
+	devSSD1331Green();
 	WarpStatus INA219Status;
 	// Set two different configs
 	INA219Status = configureSensorINA219(configRegINA219,calibrationRegINA219);
+
 	if (status != kWarpStatusOK)
-    {
-        warpPrint("Error\n");
-    }
+    	{
+        	warpPrint("Error\n");
+    	}
+
+	INA219Status = setRegisterPointerINA219(kWarpSensorOutputRegisterINA219Current);
+
+        if (status != kWarpStatusOK)
+        {
+                warpPrint("Error\n");
+        }
 
 	// devSSD1331Smile();
-	// devSSD1331Green();
-	for(size_t i; i < 1000; i++)
+	
+	for(size_t i = 0; i < 1000; i++)
 	{
 		printCurrentuAINA219();	
 	}
