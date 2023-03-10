@@ -128,9 +128,9 @@ writeSensorRegisterMMA8451Q(uint8_t deviceRegister, uint8_t payload)
 }
 
 WarpStatus
-configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_REG1)
+configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_REG1, uint8_t payloadXYZ_DATA_CFG, uint8_t payloadPL_CFG)
 {
-	WarpStatus	i2cWriteStatus1, i2cWriteStatus2;
+	WarpStatus	i2cWriteStatus1, i2cWriteStatus2, i2cWriteStatus3, i2cWriteStatus4;
 
 
 	warpScaleSupplyVoltage(deviceMMA8451QState.operatingVoltageMillivolts);
@@ -143,7 +143,15 @@ configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_REG1)
 							payloadCTRL_REG1 /* payload */
 							);
 
-	return (i2cWriteStatus1 | i2cWriteStatus2);
+	i2cWriteStatus3 = writeSensorRegisterMMA8451Q(kWarpSensorConfigurationRegisterMMA8451QXYZ_DATA_CFG /* register address CTRL_REG1 */,
+							payloadXYZ_DATA_CFG /* payload */
+							);
+
+	i2cWriteStatus4 = writeSensorRegisterMMA8451Q(kWarpSensorConfigurationRegisterMMA8451QPL_CFG /* register address CTRL_REG1 */,
+							payloadPL_CFG /* payload */
+							);
+
+	return (i2cWriteStatus1 | i2cWriteStatus2 | i2cWriteStatus3 | i2cWriteStatus4);
 }
 
 WarpStatus
@@ -305,4 +313,10 @@ printSensorDataMMA8451Q(bool hexModeFlag)
 			warpPrint(" %d,", readSensorRegisterValueCombined);
 		}
 	}
+}
+
+WarpStatus
+printAccAndOrientationMMA8451Q(uint8_t deviceRegister, int numberOfBytes)
+{
+	
 }
