@@ -316,7 +316,83 @@ printSensorDataMMA8451Q(bool hexModeFlag)
 }
 
 WarpStatus
-printAccAndOrientationMMA8451Q(uint8_t deviceRegister, int numberOfBytes)
+printAccAndOrientationMMA8451Q()
 {
-	
+	uint16_t	readSensorRegisterValueLSB;
+	uint16_t	readSensorRegisterValueMSB;
+	int16_t		readSensorRegisterValueCombined;
+	WarpStatus	i2cReadStatus;
+
+	// X
+	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QOUT_X_MSB, 2 /* numberOfBytes */);
+	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 6) | (readSensorRegisterValueLSB >> 2);
+
+	/*
+	 *	Sign extend the 14-bit value based on knowledge that upper 2 bit are 0:
+	 */
+	readSensorRegisterValueCombined = (readSensorRegisterValueCombined ^ (1 << 13)) - (1 << 13);
+
+	if (i2cReadStatus != kWarpStatusOK)
+	{
+		warpPrint(" ----,");
+	}
+	else
+	{
+		warpPrint(" %d,", readSensorRegisterValueCombined);
+	}
+
+	// Y
+	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QOUT_Y_MSB, 2 /* numberOfBytes */);
+	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 6) | (readSensorRegisterValueLSB >> 2);
+
+	/*
+	 *	Sign extend the 14-bit value based on knowledge that upper 2 bit are 0:
+	 */
+	readSensorRegisterValueCombined = (readSensorRegisterValueCombined ^ (1 << 13)) - (1 << 13);
+
+	if (i2cReadStatus != kWarpStatusOK)
+	{
+		warpPrint(" ----,");
+	}
+	else
+	{
+		warpPrint(" %d,", readSensorRegisterValueCombined);
+	}
+
+	// Z
+	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QOUT_Z_MSB, 2 /* numberOfBytes */);
+	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
+	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 6) | (readSensorRegisterValueLSB >> 2);
+
+	/*
+	 *	Sign extend the 14-bit value based on knowledge that upper 2 bit are 0:
+	 */
+	readSensorRegisterValueCombined = (readSensorRegisterValueCombined ^ (1 << 13)) - (1 << 13);
+
+	if (i2cReadStatus != kWarpStatusOK)
+	{
+		warpPrint(" ----,");
+	}
+	else
+	{
+		warpPrint(" %d,", readSensorRegisterValueCombined);
+	}
+
+	// Orientation
+	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QPL_STATUS, 1 /* numberOfBytes */);
+	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
+	readSensorRegisterValueCombined = (readSensorRegisterValueMSB & 0x04);
+	if (i2cReadStatus != kWarpStatusOK)
+	{
+		warpPrint(" ----,");
+	}
+	else
+	{
+		warpPrint(" %d,", readSensorRegisterValueCombined);
+	}
 }

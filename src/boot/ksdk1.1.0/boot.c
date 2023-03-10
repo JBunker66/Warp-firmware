@@ -45,7 +45,6 @@
  *	config.h needs to come first
  */
 #include "config.h"
-
 #include "fsl_misc_utilities.h"
 #include "fsl_device_registers.h"
 #include "fsl_i2c_master_driver.h"
@@ -2009,22 +2008,9 @@ main(void)
 	#endif
         
 	devSSD1331init();
+	configureSensorMMA8451Q(0x00,0x01,0x02,0x40);
 	devSSD1331Green();
-	WarpStatus INA219Status;
-	// Set two different configs
-	INA219Status = configureSensorINA219(configRegINA219,calibrationRegINA219);
 
-	if (status != kWarpStatusOK)
-    	{
-        	warpPrint("Error\n");
-    	}
-
-	INA219Status = setRegisterPointerINA219(kWarpSensorOutputRegisterINA219Current);
-
-        if (status != kWarpStatusOK)
-        {
-                warpPrint("Error\n");
-        }
 
 	// devSSD1331Smile();
 	
