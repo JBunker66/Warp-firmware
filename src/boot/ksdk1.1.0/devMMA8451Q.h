@@ -45,8 +45,8 @@ WarpStatus	configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_R
 void		printSensorDataMMA8451Q(bool hexModeFlag);
 void 		printAccAndOrientationMMA8451Q();
 
-#define payloadF_SETUP = 0x00 
-#define payloadCTRL_REG1 = 0x01
-#define payloadXYZ_DATA_CFG = 0x02
-#define payloadPL_CFG = 0x40
-#define accLSBmg = 1 // acc in mg 
+#define payloadF_SETUP 		0x00 
+#define payloadCTRL_REG1 	0x01
+#define payloadXYZ_DATA_CFG 0x02
+#define payloadPL_CFG 		0x40
+#define accLSBmg 			1 // acc in mg 
