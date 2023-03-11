@@ -2008,12 +2008,27 @@ main(void)
 	#endif
         
 	devSSD1331init();
-	configureSensorMMA8451Q(payloadF_SETUP, payloadCTRL_REG1, payloadXYZ_DATA_CFG, payloadPL_CFG);
-	devSSD1331Green();
-	for(size_t i = 0; i < 100; i++)
+	configureSensorMMA8451Q(payloadF_SETUP, payloadCTRL_REG1, payloadXYZ_DATA_CFG);
+	//devSSD1331Green();
+	int16_t dataArray[64]; // Want to have as large as possible 
+	int16_t mean;
+	int16_t residuals;
+	while(1) 
 	{
-	printAccAndOrientationMMA8451Q();
-	OSA_TimeDelay(100);
+		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
+		{
+			dataArray[i] = returnZAccMMA8451Q();
+			mean += (dataArray[i] >> 6);
+			residuals += (dataArray[i] && 0x003F);
+			if(residuals > 0x0040)
+			{
+				residuals -= 0x0040;
+				mean += 1;
+			}
+			OSA_TimeDelay(100);
+		}
+		warpPrint("Mean = %d", mean);
+
 	}
 	while (1)
 	{

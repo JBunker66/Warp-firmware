@@ -128,7 +128,7 @@ writeSensorRegisterMMA8451Q(uint8_t deviceRegister, uint8_t payload)
 }
 
 WarpStatus
-configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_REG1, uint8_t payloadXYZ_DATA_CFG, uint8_t payloadPL_CFG)
+configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_REG1, uint8_t payloadXYZ_DATA_CFG)
 {
 	WarpStatus	i2cWriteStatus1, i2cWriteStatus2, i2cWriteStatus3, i2cWriteStatus4;
 
@@ -380,19 +380,36 @@ printAccAndOrientationMMA8451Q()
 	}
 	else
 	{
-		warpPrint("z acc: %d,", readSensorRegisterValueCombined);
+		warpPrint("z acc: %d \n", readSensorRegisterValueCombined);
 	}
+}
 
-	// Orientation
-	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QPL_STATUS, 1 /* numberOfBytes */);
+int16_t
+returnZAccMMA8451Q()
+{
+
+	uint16_t	readSensorRegisterValueLSB;
+	uint16_t	readSensorRegisterValueMSB;
+	int16_t		readSensorRegisterValueCombined;
+	WarpStatus	i2cReadStatus;
+
+	// Z
+	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QOUT_Z_MSB, 2 /* numberOfBytes */);
 	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueCombined = (readSensorRegisterValueMSB & 0x07);
+	readSensorRegisterValueLSB = deviceMMA8451QState.i2cBuffer[1];
+	readSensorRegisterValueCombined = ((readSensorRegisterValueMSB & 0xFF) << 6) | (readSensorRegisterValueLSB >> 2);
+
+	/*
+	 *	Sign extend the 14-bit value based on knowledge that upper 2 bit are 0:
+	 */
+	readSensorRegisterValueCombined = (readSensorRegisterValueCombined ^ (1 << 13)) - (1 << 13);
+
 	if (i2cReadStatus != kWarpStatusOK)
 	{
-		warpPrint("z acc: ----,");
+		return 0; // Error treat as middle case
 	}
 	else
 	{
-		warpPrint("position: %d \n", readSensorRegisterValueCombined);
+		return readSensorRegisterValueCombined;
 	}
 }

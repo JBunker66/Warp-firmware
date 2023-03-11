@@ -41,12 +41,12 @@ WarpStatus	readSensorRegisterMMA8451Q(uint8_t deviceRegister, int numberOfBytes)
 WarpStatus	writeSensorRegisterMMA8451Q(uint8_t deviceRegister,
 					uint8_t payloadBtye);
 WarpStatus	configureSensorMMA8451Q(uint8_t payloadF_SETUP, uint8_t payloadCTRL_REG1,
-					uint8_t payloadXYZ_DATA_CFG, uint8_t payloadPL_CFG);
+					uint8_t payloadXYZ_DATA_CFG);
 void		printSensorDataMMA8451Q(bool hexModeFlag);
 void 		printAccAndOrientationMMA8451Q();
+int16_t		returnZAccMMA8451Q();
 
 #define payloadF_SETUP 		0x00 
 #define payloadCTRL_REG1 	0x01
 #define payloadXYZ_DATA_CFG 0x02
-#define payloadPL_CFG 		0xC0
-#define accLSBmg 			1 // acc in mg 
+#define accLSBmg 			250 // acc in ug 
