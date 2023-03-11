@@ -217,3 +217,45 @@ devSSD1331Green(void)
 
     return 0;
 }
+
+int
+devSSD1331Orange(void)
+{
+   writeCommand(kSSD1331CommandDRAWRECT);
+
+    writeCommand(0); // Start x 0 - 95
+    writeCommand(0); // Start y 0 - 63
+    writeCommand(95); // End x
+    writeCommand(63); // End y
+
+    writeCommand(255); // Red outline
+    writeCommand(88);   // Green outline
+    writeCommand(0);   // Blue outline 
+
+    writeCommand(255); // Red fill
+    writeCommand(88);   // Green fill
+    writeCommand(0);   // Blue fill
+
+    return 0;
+}
+
+int
+devSSD1331Red(void)
+{
+   writeCommand(kSSD1331CommandDRAWRECT);
+
+    writeCommand(0); // Start x 0 - 95
+    writeCommand(0); // Start y 0 - 63
+    writeCommand(95); // End x
+    writeCommand(63); // End y
+
+    writeCommand(255); // Red outline
+    writeCommand(0);   // Green outline
+    writeCommand(0);   // Blue outline 
+
+    writeCommand(255); // Red fill
+    writeCommand(0);   // Green fill
+    writeCommand(0);   // Blue fill
+
+    return 0;
+}

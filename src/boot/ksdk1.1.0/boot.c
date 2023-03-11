@@ -2011,13 +2011,6 @@ main(void)
 	configureSensorMMA8451Q(0x00,0x01,0x02,0x40);
 	devSSD1331Green();
 
-
-	// devSSD1331Smile();
-	
-	for(size_t i = 0; i < 1000; i++)
-	{
-		printCurrentuAINA219();	
-	}
 	while (1)
 	{
 		/*
@@ -3119,11 +3112,11 @@ printAllSensors(bool printHeadersAndCalibration, bool hexModeFlag, int menuDelay
 					0x01,/* Frame rate 1 FPS */
 					);
 	#endif
-	#if (WARP_BUILD_ENABLE_DEVMMA8451Q)
-	numberOfConfigErrors += configureSensorMMA8451Q(0x00,/* Payload: Disable FIFO */
-					0x01/* Normal read 8bit, 800Hz, normal, active mode */
-					);
-	#endif
+	//#if (WARP_BUILD_ENABLE_DEVMMA8451Q)
+	//numberOfConfigErrors += configureSensorMMA8451Q(0x00,/* Payload: Disable FIFO */
+					//0x01/* Normal read 8bit, 800Hz, normal, active mode */
+					//);
+	//#endif
 	#if (WARP_BUILD_ENABLE_DEVMAG3110)
 	numberOfConfigErrors += configureSensorMAG3110(	0x00,/*	Payload: DR 000, OS 00, 80Hz, ADC 1280, Full 16bit, standby mode to set up register*/
 					0xA0,/*	Payload: AUTO_MRST_EN enable, RAW value without offset */
