@@ -315,7 +315,7 @@ printSensorDataMMA8451Q(bool hexModeFlag)
 	}
 }
 
-WarpStatus
+void
 printAccAndOrientationMMA8451Q()
 {
 	uint16_t	readSensorRegisterValueLSB;
@@ -340,7 +340,7 @@ printAccAndOrientationMMA8451Q()
 	}
 	else
 	{
-		warpPrint(" %d,", readSensorRegisterValueCombined);
+		warpPrint("x acc: %d,", readSensorRegisterValueCombined);
 	}
 
 	// Y
@@ -360,7 +360,7 @@ printAccAndOrientationMMA8451Q()
 	}
 	else
 	{
-		warpPrint(" %d,", readSensorRegisterValueCombined);
+		warpPrint("y acc: %d,", readSensorRegisterValueCombined);
 	}
 
 	// Z
@@ -386,13 +386,13 @@ printAccAndOrientationMMA8451Q()
 	// Orientation
 	i2cReadStatus = readSensorRegisterMMA8451Q(kWarpSensorOutputRegisterMMA8451QPL_STATUS, 1 /* numberOfBytes */);
 	readSensorRegisterValueMSB = deviceMMA8451QState.i2cBuffer[0];
-	readSensorRegisterValueCombined = (readSensorRegisterValueMSB & 0x04);
+	readSensorRegisterValueCombined = (readSensorRegisterValueMSB & 0x07);
 	if (i2cReadStatus != kWarpStatusOK)
 	{
-		warpPrint(" ----,");
+		warpPrint("z acc: ----,");
 	}
 	else
 	{
-		warpPrint(" %d,", readSensorRegisterValueCombined);
+		warpPrint("position: %d,", readSensorRegisterValueCombined);
 	}
 }
