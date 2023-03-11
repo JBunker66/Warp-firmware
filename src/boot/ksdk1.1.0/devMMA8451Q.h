@@ -48,5 +48,5 @@ void 		printAccAndOrientationMMA8451Q();
 #define payloadF_SETUP 		0x00 
 #define payloadCTRL_REG1 	0x01
 #define payloadXYZ_DATA_CFG 0x02
-#define payloadPL_CFG 		0x40
+#define payloadPL_CFG 		0xC0
 #define accLSBmg 			1 // acc in mg 

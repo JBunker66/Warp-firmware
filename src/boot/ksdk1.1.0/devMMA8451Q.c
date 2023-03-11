@@ -380,7 +380,7 @@ printAccAndOrientationMMA8451Q()
 	}
 	else
 	{
-		warpPrint(" %d,", readSensorRegisterValueCombined);
+		warpPrint("z acc: %d,", readSensorRegisterValueCombined);
 	}
 
 	// Orientation
@@ -393,6 +393,6 @@ printAccAndOrientationMMA8451Q()
 	}
 	else
 	{
-		warpPrint("position: %d,", readSensorRegisterValueCombined);
+		warpPrint("position: %d \n", readSensorRegisterValueCombined);
 	}
 }

@@ -2010,9 +2010,10 @@ main(void)
 	devSSD1331init();
 	configureSensorMMA8451Q(payloadF_SETUP, payloadCTRL_REG1, payloadXYZ_DATA_CFG, payloadPL_CFG);
 	devSSD1331Green();
-	while(1)
+	for(size_t i = 0; i < 100; i++)
 	{
 	printAccAndOrientationMMA8451Q();
+	OSA_TimeDelay(100);
 	}
 	while (1)
 	{
