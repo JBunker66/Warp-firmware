@@ -2008,9 +2008,12 @@ main(void)
 	#endif
         
 	devSSD1331init();
-	configureSensorMMA8451Q(0x00,0x01,0x02,0x40);
+	configureSensorMMA8451Q(payloadF_SETUP, payloadCTRL_REG1, payloadXYZ_DATA_CFG, payloadPL_CFG);
 	devSSD1331Green();
-
+	while(1)
+	{
+	printAccAndOrientationMMA8451Q();
+	}
 	while (1)
 	{
 		/*
