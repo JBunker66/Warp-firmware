@@ -1887,7 +1887,18 @@ main(void)
 		}
 		std = (int16_t)floor(sqrt(sum/63));
 		warpPrint("Standard devation = %d \n", std);
-
+		if(mean  > FourtyFiveDegrees)
+		{
+			devSSD1331Green();
+		}
+		else if(mean < -FourtyFiveDegrees)
+		{
+			devSSD1331Red();
+		}
+		else
+		{
+			devSSD1331Orange();
+		}
 	}
 	while (1)
 	{
