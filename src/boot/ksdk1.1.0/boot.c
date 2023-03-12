@@ -1903,8 +1903,8 @@ main(void)
 		floatDevation = sum/64;
 		floatDevation = floatDevation*floatDevation*floatDevation;
 		floatDevation = sqrt(floatDevation);
-		ks = floor((floatMean*1000)/sum); // Names wrong for this one
-		warpPrint("mili-Skew = %d \n", ks);
+		ks = floor((floatMean*1000)/sum);
+		warpPrint("mili-Skew = %d , numerator = %d, denominator = %d \n", ks, (int16_t)floor(floatMean), (int16_t)floor(floatDevation));
 
 		floatMean = 0;
 		for(size_t i = 0; i < 64; i++)
@@ -1914,9 +1914,9 @@ main(void)
 		floatDevation = sum/64;
 		floatMean = floatMean/64;
 
-		ks = floor((floatMean*1000)/sum); // Names wrong for this one
-		warpPrint("mili-Kurtosis = %d \n", ks);		// End test
-
+		ks = floor((floatMean*1000)/sum);
+		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", ks, (int16_t)floor(floatMean), (int16_t)floor(floatDevation));
+		// End test
 		if(mean  > FourtyFiveDegrees)
 		{
 			devSSD1331Green();
