@@ -40,7 +40,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-
+#include <math.h>
 /*
  *	config.h needs to come first
  */
@@ -60,6 +60,7 @@
 #include "errstrs.h"
 #include "gpio_pins.h"
 #include "SEGGER_RTT.h"
+
 
 
 #define							kWarpConstantStringI2cFailure		"\rI2C failed, reg 0x%02x, code %d\n"
@@ -1873,7 +1874,7 @@ main(void)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
 			sum += dataArray[i];
-			warpPrint("Sum = %d \n", sum);
+			//warpPrint("Sum = %d \n", sum);
 			OSA_TimeDelay(50);
 		}
 		mean = (int16_t)floor(sum/64);
@@ -1882,7 +1883,7 @@ main(void)
 		for(size_t i = 0; i < 64; i++)
 		{
 			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
-			warpPrint("Sum = %d \n", sum);
+			//warpPrint("Sum = %d \n", sum);
 		}
 		std = (int16_t)floor(sum/63);
 		warpPrint("Standard devation = %d \n", std);
