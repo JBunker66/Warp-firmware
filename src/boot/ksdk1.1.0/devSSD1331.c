@@ -228,13 +228,13 @@ devSSD1331Orange(void)
     writeCommand(95); // End x
     writeCommand(63); // End y
 
-    writeCommand(255); // Red outline
-    writeCommand(88);   // Green outline
-    writeCommand(0);   // Blue outline 
+    writeCommand(240); // Red outline
+    writeCommand(120);   // Green outline
+    writeCommand(3);   // Blue outline 
 
-    writeCommand(255); // Red fill
-    writeCommand(88);   // Green fill
-    writeCommand(0);   // Blue fill
+    writeCommand(240); // Red fill
+    writeCommand(120);   // Green fill
+    writeCommand(3);   // Blue fill
 
     return 0;
 }

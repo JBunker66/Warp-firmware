@@ -1865,16 +1865,17 @@ main(void)
 	int16_t dataArray[64]; // Want to have as large as possible 
 	int16_t mean = 0;
 	int16_t std = 0;
+	int16_t certantyChecker;
 	int32_t sum;
 
 	while(1) 
 	{	
 		sum = 0;
+		certantyChecker = 0;
 		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
 			sum += dataArray[i];
-			//warpPrint("Sum = %d \n", sum);
 			OSA_TimeDelay(50);
 		}
 		mean = (int16_t)floor(sum/64);
@@ -1883,21 +1884,49 @@ main(void)
 		for(size_t i = 0; i < 64; i++)
 		{
 			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
-			//warpPrint("Sum = %d \n", sum);
 		}
 		std = (int16_t)floor(sqrt(sum/63));
 		warpPrint("Standard devation = %d \n", std);
 		if(mean  > FourtyFiveDegrees)
 		{
 			devSSD1331Green();
+			while(mean > FourtyFiveDegrees)
+			{
+				certantyChecker++;
+				mean -= std;
+			}
+			warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
 		}
 		else if(mean < -FourtyFiveDegrees)
 		{
 			devSSD1331Red();
+			while(mean < -FourtyFiveDegrees)
+			{
+				certantyChecker++;
+				mean += std;
+			}
+			warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
 		}
 		else
 		{
 			devSSD1331Orange();
+			if(mean > 0)
+			{
+				while(mean < FourtyFiveDegrees)
+				{
+					certantyChecker++;
+					mean += std;	
+				}
+			}
+			else
+			{
+				while(mean > -FourtyFiveDegrees)
+				{
+					certantyChecker++;
+					mean -= std;
+				}
+			}
+			warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
 		}
 	}
 	while (1)
