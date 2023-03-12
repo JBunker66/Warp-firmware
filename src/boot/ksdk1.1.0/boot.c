@@ -1867,7 +1867,8 @@ main(void)
 	int16_t std = 0;
 	int16_t certantyChecker;
 	int64_t sum;
-	int64_t skew;
+	float skew;
+	float floatSum;
 	int64_t kurtosis;
 
 	while(1) 
@@ -1895,12 +1896,12 @@ main(void)
 
 		// Start test - might be to big. Note some data lost with floor
 
-		skew = floor(skew/64);
-		sum = floor(sum/64);
-		sum = sum*sum*sum;
-		sum = floor(sqrt(sum));
-		skew = floor(skew/sum);
-		warpPrint("Skew = %d \n", skew);
+		skew = skew/64;
+		floatSum = sum/64;
+		floatSum = floatSum*floatSum*floatSum;
+		floatSum = sqrt(floatSum);
+		kurtosis = floor((skew*100)/sum); // Names wrong for this one
+		warpPrint("Skew = %d \n", kurtosis);
 
 		// End test
 
