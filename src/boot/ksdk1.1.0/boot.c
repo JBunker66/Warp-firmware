@@ -1863,8 +1863,8 @@ main(void)
 	configureSensorMMA8451Q(payloadF_SETUP, payloadCTRL_REG1, payloadXYZ_DATA_CFG);
 	//devSSD1331Green();
 	int16_t dataArray[64]; // Want to have as large as possible 
-	int16_t mean;
-	int16_t std;
+	int16_t mean = 0;
+	int16_t std = 0;
 	int32_t sum;
 
 	while(1) 
