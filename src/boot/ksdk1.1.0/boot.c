@@ -1867,43 +1867,55 @@ main(void)
 	int16_t std = 0;
 	int16_t certantyChecker;
 	int64_t sum;
-	float skew;
-	float floatSum;
-	int64_t kurtosis;
+	float floatMean;
+	float floatDevation;
+	int16_t ks;
 
 	while(1) 
 	{	
 		sum = 0;
 		certantyChecker = 0;
-		skew = 0;
-		kurtosis = 0;
+		floatDevation = 0;
+		floatMean = 0;
+		ks = 0;
+
 		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
+			warpPrint("%d,", dataArray[i]);
 			sum += dataArray[i];
 			OSA_TimeDelay(50);
 		}
+		warpPrint("\n");
 		mean = (int16_t)floor(sum/64);
 		warpPrint("Mean = %d \n", mean);
 		sum = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
 			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
-			skew += (dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean);
+			floatMean += (dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean);
 		}
 		std = (int16_t)floor(sqrt(sum/63));
 		warpPrint("Standard devation = %d \n", std);
 
 		// Start test - might be to big. Note some data lost with floor
+		floatMean = floatMean/64;
+		floatDevation = sum/64;
+		floatDevation = floatDevation*floatDevation*floatDevation;
+		floatDevation = sqrt(floatDevation);
+		ks = floor((floatMean*1000)/sum); // Names wrong for this one
+		warpPrint("mili-Skew = %d \n", ks);
 
-		skew = skew/64;
-		floatSum = sum/64;
-		floatSum = floatSum*floatSum*floatSum;
-		floatSum = sqrt(floatSum);
-		kurtosis = floor((skew*100)/sum); // Names wrong for this one
-		warpPrint("Skew = %d \n", kurtosis);
+		floatMean = 0;
+		for(size_t i = 0; i < 64; i++)
+		{
+			floatMean += (dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean);
+		}
+		floatDevation = sum/64;
+		floatMean = floatMean/64;
 
-		// End test
+		ks = floor((floatMean*1000)/sum); // Names wrong for this one
+		warpPrint("mili-Kurtosis = %d \n", ks);		// End test
 
 		if(mean  > FourtyFiveDegrees)
 		{
