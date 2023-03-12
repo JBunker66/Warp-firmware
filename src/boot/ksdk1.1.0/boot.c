@@ -1873,6 +1873,7 @@ main(void)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
 			sum += dataArray[i];
+			warpPrint("Sum = %d \n", sum);
 			OSA_TimeDelay(100);
 		}
 		mean = (int16_t)floor(sum/64);
@@ -1881,6 +1882,7 @@ main(void)
 		for(size_t i = 0; i < 64; i++)
 		{
 			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
+			warpPrint("Sum = %d \n", sum);
 		}
 		std = (int16_t)floor(sum/63);
 		warpPrint("Standard devation = %d \n", std);
