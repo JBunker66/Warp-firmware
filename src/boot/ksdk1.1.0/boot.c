@@ -1867,8 +1867,8 @@ main(void)
 	int16_t std = 0;
 	int16_t certantyChecker;
 	int64_t sum;
-	float floatMean;
-	float floatDevation;
+	double floatMean;
+	double floatDevation;
 	int16_t ks;
 
 	while(1) 
