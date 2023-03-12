@@ -1885,7 +1885,7 @@ main(void)
 			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
 			//warpPrint("Sum = %d \n", sum);
 		}
-		std = (int16_t)floor(sum/63);
+		std = (int16_t)floor(sqrt(sum/63));
 		warpPrint("Standard devation = %d \n", std);
 
 	}
