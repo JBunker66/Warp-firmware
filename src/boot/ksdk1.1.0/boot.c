@@ -1866,12 +1866,16 @@ main(void)
 	int16_t mean = 0;
 	int16_t std = 0;
 	int16_t certantyChecker;
-	int32_t sum;
+	int64_t sum;
+	int64_t skew;
+	int64_t kurtosis;
 
 	while(1) 
 	{	
 		sum = 0;
 		certantyChecker = 0;
+		skew = 0;
+		kurtosis = 0;
 		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
@@ -1884,9 +1888,21 @@ main(void)
 		for(size_t i = 0; i < 64; i++)
 		{
 			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
+			skew += (dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean);
 		}
 		std = (int16_t)floor(sqrt(sum/63));
 		warpPrint("Standard devation = %d \n", std);
+
+		// Start test - might be to big. Note some data lost with floor
+
+		skew = floor(skew/64);
+		sum = floor(sum/64);
+		sum = sum*sum*sum;
+		sum = floor(sqrt(sum));
+		skew = floor(skew/sum);
+
+		// End test
+
 		if(mean  > FourtyFiveDegrees)
 		{
 			devSSD1331Green();
@@ -1895,7 +1911,6 @@ main(void)
 				certantyChecker++;
 				mean -= std;
 			}
-			warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
 		}
 		else if(mean < -FourtyFiveDegrees)
 		{
@@ -1905,7 +1920,6 @@ main(void)
 				certantyChecker++;
 				mean += std;
 			}
-			warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
 		}
 		else
 		{
@@ -1926,8 +1940,9 @@ main(void)
 					mean -= std;
 				}
 			}
-			warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
+			
 		}
+		warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
 	}
 	while (1)
 	{
@@ -1953,10 +1968,6 @@ main(void)
 			warpPrint("\r- 'v': Enter VLLS0 low-power mode for 3s, then reset\n");
 		#endif
 
-		warpPrint("\r- 'x': disable SWD and spin for 10 secs.\n");
-		warpPrint("\r- 'z': perpetually dump all sensor data.\n");
-
-		warpPrint("\rEnter selection> ");
 		key = warpWaitKey();
 
 		switch (key)
