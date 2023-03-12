@@ -1900,6 +1900,7 @@ main(void)
 		sum = sum*sum*sum;
 		sum = floor(sqrt(sum));
 		skew = floor(skew/sum);
+		warpPrint("Skew = %d \n", skew);
 
 		// End test
 
