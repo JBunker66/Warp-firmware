@@ -1874,7 +1874,7 @@ main(void)
 			dataArray[i] = returnZAccMMA8451Q();
 			sum += dataArray[i];
 			warpPrint("Sum = %d \n", sum);
-			OSA_TimeDelay(100);
+			OSA_TimeDelay(50);
 		}
 		mean = (int16_t)floor(sum/64);
 		warpPrint("Mean = %d \n", mean);
