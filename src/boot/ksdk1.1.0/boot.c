@@ -1894,7 +1894,7 @@ main(void)
 		stdSum = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
-			stdTemp = dataArray[i]*16 - (int16_t)floor(meanSum/4);	//Reusing Var
+			stdTemp = dataArray[i]*16 - meanSum/4;	//Reusing Var
 			stdSum += stdTemp*stdTemp;
 			cubedSum += stdTemp*stdTemp*stdTemp;
 			fourthSum += (int64_t)floor(stdTemp*stdTemp*stdTemp*stdTemp/64);
@@ -1907,7 +1907,7 @@ main(void)
 		stdTemp = stdTemp*stdTemp*stdTemp;
 		
 		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
-		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", milliKS, cubedSum, stdTemp);
+		warpPrint("mili-skew = %d , numerator = %d, denominator = %d \n", milliKS, cubedSum, stdTemp);
 		
 		stdTemp = (int64_t)floor(stdSum/64);
 		stdTemp = stdTemp*stdTemp;
