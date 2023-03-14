@@ -51,3 +51,5 @@ int16_t		returnZAccMMA8451Q();
 #define payloadXYZ_DATA_CFG 0x02
 #define accLSBmg 			250 // acc in ug 
 #define FourtyFiveDegrees	2828 // assuming above is true
+#define ThirtyDegrees		3465
+#define FifteenDegrees		3863
