@@ -1866,46 +1866,48 @@ main(void)
 	int16_t mean = 0;
 	int16_t std = 0;
 	int16_t certantyChecker;
-	int64_t sum;
-	long double floatMean;
-	long double floatDevation;
-	int16_t ks;
+	int64_t meanSum;
+	int64_t stdSum;
+	int64_t cubedSum;
+	int64_t fourthSum;
+	int64_t stdTemp;
+	int16_t milliKS;
 
 	while(1) 
 	{	
-		sum = 0;
+		meanSum = 0;
 		certantyChecker = 0;
-		floatDevation = 0;
-		floatMean = 0;
-		ks = 0;
+		cubedSum = 0;
+		fourthSum = 0;
+		milliKS = 0;
 
 		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
 			warpPrint("%d,", dataArray[i]);
-			sum += dataArray[i];
+			meanSum += dataArray[i];
 			OSA_TimeDelay(50);
 		}
 		warpPrint("\n");
-		mean = (int16_t)floor(sum/64);
+		mean = (int16_t)floor(meanSum/64);
 		warpPrint("Mean = %d \n", mean);
-		sum = 0;
+		stdSum = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
-			sum += (dataArray[i]-mean)*(dataArray[i]-mean);
-			floatMean += (dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean);
+			stdSum += (64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum);
+			cubedSum += (64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum);
+			fourthSum += (64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum);
 		}
-		std = (int16_t)floor(sqrt(sum/63));
+		std = (int16_t)floor(sqrt(stdSum/(63*64*64)));
 		warpPrint("Standard devation = %d \n", std);
 
 		// Start test - might be to big. Note some data lost with floor
-		floatMean = floatMean/64;
-		floatDevation = sum/64;
-		floatDevation = floatDevation*floatDevation*floatDevation;
-		floatDevation = sqrt(floatDevation);
-		ks = floor((floatMean*1000)/sum);
-		warpPrint("mili-Skew = %d , numerator = %d, denominator = %d \n", ks, (int16_t)floor(floatMean), (int16_t)floor(floatDevation));
 
+		stdTemp = stdSum*stdSum*stdSum;
+		stdTemp = (int64_t)floor(stdTemp);
+		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
+		warpPrint("mili-Skew = %d , numerator = %d, denominator = %d \n", milliKS, (int16_t)floor(cubedSum/16777216), (int16_t)floor(stdTemp/134217728));
+		/*
 		floatMean = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
@@ -1914,8 +1916,9 @@ main(void)
 		floatDevation = sum/64;
 		floatMean = floatMean/64;
 
-		ks = floor((floatMean*1000)/sum);
+		ks = floor((floatMean*1000)/floatDevation);
 		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", ks, (int16_t)floor(floatMean), (int16_t)floor(floatDevation));
+		*/
 		// End test
 		if(mean  > FourtyFiveDegrees)
 		{
