@@ -1904,21 +1904,15 @@ main(void)
 		// Start test - might be to big. Note some data lost with floor
 
 		stdTemp = stdSum*stdSum*stdSum;
-		stdTemp = (int64_t)floor(stdTemp);
+		stdTemp = (int64_t)floor(sqrt(stdTemp));
 		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
 		warpPrint("mili-Skew = %d , numerator = %d, denominator = %d \n", milliKS, (int16_t)floor(cubedSum/16777216), (int16_t)floor(stdTemp/134217728));
-		/*
-		floatMean = 0;
-		for(size_t i = 0; i < 64; i++)
-		{
-			floatMean += (dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean)*(dataArray[i]-mean);
-		}
-		floatDevation = sum/64;
-		floatMean = floatMean/64;
+		
 
-		ks = floor((floatMean*1000)/floatDevation);
-		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", ks, (int16_t)floor(floatMean), (int16_t)floor(floatDevation));
-		*/
+		stdTemp = stdTemp*stdTemp*stdTemp*stdTemp*stdTemp*stdTemp;
+		milliKS = floor((fourthSum*64000)/stdTemp);
+		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", milliKS, (int16_t)floor(fourthSum/1073741824), stdTemp);
+		
 		// End test
 		if(mean  > FourtyFiveDegrees)
 		{
