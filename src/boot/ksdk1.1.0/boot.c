@@ -1865,7 +1865,7 @@ main(void)
 	int16_t dataArray[64]; // Want to have as large as possible 
 	int16_t mean = 0;
 	int16_t std = 0;
-	int16_t certantyChecker;
+	uint8_t certantyChecker;
 	int64_t meanSum;
 	int64_t stdSum;
 	int64_t cubedSum;
@@ -1880,7 +1880,7 @@ main(void)
 		cubedSum = 0;
 		fourthSum = 0;
 		milliKS = 0;
-
+		warpPrint("\n");
 		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
@@ -1907,12 +1907,12 @@ main(void)
 		stdTemp = stdTemp*stdTemp*stdTemp;
 		
 		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
-		warpPrint("mili-skew = %d , numerator = %d, denominator = %d \n", milliKS, cubedSum, stdTemp);
+		warpPrint("mili-skew = %d \n", milliKS);
 		
 		stdTemp = (int64_t)floor(stdSum/64);
 		stdTemp = stdTemp*stdTemp;
 		milliKS = (int16_t)floor((fourthSum*1000)/stdTemp);
-		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", milliKS, fourthSum, stdTemp);
+		warpPrint("mili-kurtosis = %d \n", milliKS);
 		
 		// End test
 		if(mean  > FourtyFiveDegrees)
@@ -1954,7 +1954,30 @@ main(void)
 			}
 			
 		}
-		warpPrint("Standard devations of confidence to next closest = %d \n", certantyChecker);
+		warpPrint("Assuming normal distribution which can be jugded with the skew and kurtosis: \n");
+		switch (certantyChecker)
+		{
+		case 1:
+			warpPrint("Probability of being next closest state <  0.317 \n");	
+			break;
+		case 2:
+			warpPrint("Probability of being next closest state <  0.0455 \n");	
+			break;
+		case 3:
+			warpPrint("Probability of being next closest state < 0.00270 \n");	
+			break;
+		case 4:
+			warpPrint("Probability of being next closest state <  0.0000633 \n");	
+			break;
+		case 5:
+			warpPrint("Probability of being next closest state =  0.000000573 \n");	
+			break;
+		default:
+			warpPrint("Probability of being next closest state =  0.00000000197 \n");	
+			break;		
+		}
+		warpPrint("\n");
+		
 	}
 	while (1)
 	{
