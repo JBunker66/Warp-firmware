@@ -1871,7 +1871,7 @@ main(void)
 	int64_t cubedSum;
 	int64_t fourthSum;
 	int64_t stdTemp;
-	int16_t milliKS;
+	int32_t milliKS;
 
 	while(1) 
 	{	
@@ -1906,12 +1906,12 @@ main(void)
 		stdTemp = (int64_t)floor(sqrt(stdSum));
 		stdTemp = stdTemp*stdTemp*stdTemp;
 		
-		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
+		milliKS = (int32_t)floor((cubedSum*8000)/stdTemp);
 		warpPrint("mili-skew = %d \n", milliKS);
 		
 		stdTemp = (int64_t)floor(stdSum/64);
 		stdTemp = stdTemp*stdTemp;
-		milliKS = (int16_t)floor((fourthSum*1000)/stdTemp);
+		milliKS = (int32_t)floor((fourthSum*1000)/stdTemp);
 		warpPrint("mili-kurtosis = %d \n", milliKS);
 		
 		// End test
