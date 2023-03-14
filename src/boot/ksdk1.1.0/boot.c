@@ -1894,24 +1894,25 @@ main(void)
 		stdSum = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
-			stdSum += (64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum);
-			cubedSum += (64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum);
-			fourthSum += (64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum)*(64*dataArray[i]-meanSum);
+			stdTemp = dataArray[i]*16 - (int16_t)floor(meanSum/4);	//Reusing Var
+			stdSum += stdTemp*stdTemp;
+			cubedSum += stdTemp*stdTemp*stdTemp;
+			fourthSum += (int64_t)floor(stdTemp*stdTemp*stdTemp*stdTemp/64);
 		}
-		std = (int16_t)floor(sqrt(stdSum/(63*64*64)));
+		std = (int16_t)floor(sqrt(stdSum/(63*16*16)));
 		warpPrint("Standard devation = %d \n", std);
 
 		// Start test - might be to big. Note some data lost with floor
-
-		stdTemp = stdSum*stdSum*stdSum;
-		stdTemp = (int64_t)floor(sqrt(stdTemp));
-		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
-		warpPrint("mili-Skew = %d , numerator = %d, denominator = %d \n", milliKS, (int16_t)floor(cubedSum/16777216), (int16_t)floor(stdTemp/134217728));
+		stdTemp = (int64_t)floor(sqrt(stdSum));
+		stdTemp = stdTemp*stdTemp*stdTemp;
 		
-
-		stdTemp = stdTemp*stdTemp*stdTemp*stdTemp*stdTemp*stdTemp;
-		milliKS = floor((fourthSum*64000)/stdTemp);
-		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", milliKS, (int16_t)floor(fourthSum/1073741824), stdTemp);
+		milliKS = (int16_t)floor((cubedSum*8000)/stdTemp);
+		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", milliKS, cubedSum, stdTemp);
+		
+		stdTemp = (int64_t)floor(stdSum/64);
+		stdTemp = stdTemp*stdTemp;
+		milliKS = (int16_t)floor((fourthSum*1000)/stdTemp);
+		warpPrint("mili-kurtosis = %d , numerator = %d, denominator = %d \n", milliKS, fourthSum, stdTemp);
 		
 		// End test
 		if(mean  > FourtyFiveDegrees)
