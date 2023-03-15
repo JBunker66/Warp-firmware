@@ -1985,7 +1985,7 @@ main(void)
 				tempMean -= std;
 			}
 			boundary2 = probFinder(certantyChecker);
-			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", boundary1, boundary2, 100 - boundary1 - boundary2);
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", 100 - boundary1 - boundary2, boundary1, boundary2);
 			
 		}
 		
