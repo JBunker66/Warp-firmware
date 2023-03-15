@@ -1864,8 +1864,10 @@ main(void)
 	//devSSD1331Green();
 	int16_t dataArray[64]; // Want to have as large as possible 
 	int16_t mean = 0;
+	int16_t tempMean;
 	int16_t std = 0;
 	uint8_t certantyChecker;
+	uint8_t boundary1, boundary2;
 	int64_t meanSum;
 	int64_t stdSum;
 	int64_t cubedSum;
@@ -1884,7 +1886,7 @@ main(void)
 		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
-			warpPrint("%d,", dataArray[i]);
+			warpPrint("%d,", dataArray[i]); // Comment/Uncomment to see raw data
 			meanSum += dataArray[i];
 			OSA_TimeDelay(50);
 		}
@@ -1894,7 +1896,7 @@ main(void)
 		stdSum = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
-			stdTemp = dataArray[i]*16 - meanSum/4;	//Reusing Var
+			stdTemp = dataArray[i]*16 - meanSum/4;
 			stdSum += stdTemp*stdTemp;
 			cubedSum += stdTemp*stdTemp*stdTemp;
 			fourthSum += (int64_t)floor(stdTemp*stdTemp*stdTemp*stdTemp/64);
@@ -1902,7 +1904,6 @@ main(void)
 		std = (int16_t)floor(sqrt(stdSum/(63*16*16)));
 		warpPrint("Standard devation = %d \n", std);
 
-		// Start test - might be to big. Note some data lost with floor
 		stdTemp = (int64_t)floor(sqrt(stdSum));
 		stdTemp = stdTemp*stdTemp*stdTemp;
 		
@@ -1914,68 +1915,81 @@ main(void)
 		milliKS = (int32_t)floor((fourthSum*1000)/stdTemp);
 		warpPrint("mili-kurtosis = %d \n", milliKS);
 		
-		// End test
+		std = (int16_t)floor(std/10);
+
+		warpPrint("Assuming normal distribution which can be jugded with the skew and kurtosis: \n");
+		// Green bound. Other angles available in devMMA8451Q.h 
 		if(mean  > FourtyFiveDegrees)
 		{
 			devSSD1331Green();
-			while(mean > FourtyFiveDegrees)
+			tempMean = mean;
+			while(tempMean > FourtyFiveDegrees && certantyChecker < 20)
 			{
 				certantyChecker++;
-				mean -= std;
+				tempMean -= std;
 			}
+			boundary1 = probFinder(certantyChecker);
+			certantyChecker = 0;
+			tempMean = mean;
+			while(tempMean > -FourtyFiveDegrees && certantyChecker < 20)
+			{
+				certantyChecker++;
+				tempMean -= std;
+			}
+			boundary2 = probFinder(certantyChecker);
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", 100 - boundary1, boundary1 - boundary2, boundary2);
 		}
+
+		// Red bound
 		else if(mean < -FourtyFiveDegrees)
 		{
 			devSSD1331Red();
-			while(mean < -FourtyFiveDegrees)
+			tempMean = mean;
+			while(tempMean < -FourtyFiveDegrees && certantyChecker < 20)
 			{
 				certantyChecker++;
-				mean += std;
+				tempMean += std;
 			}
+			boundary1 = probFinder(certantyChecker);
+			certantyChecker = 0;
+			tempMean = mean;
+			while(tempMean < FourtyFiveDegrees && certantyChecker < 20)
+			{
+				certantyChecker++;
+				tempMean += std;
+			}
+			boundary2 = probFinder(certantyChecker);
+
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", boundary2, boundary1 - boundary2, 100 - boundary1);
 		}
+
+		// Orange bound
+		// Note: While defined as not being red or green to get the uncertanty need to edit the internal values
 		else
 		{
 			devSSD1331Orange();
-			if(mean > 0)
+			tempMean = mean;
+
+			while(tempMean < FourtyFiveDegrees && certantyChecker < 20)
 			{
-				while(mean < FourtyFiveDegrees)
-				{
-					certantyChecker++;
-					mean += std;	
-				}
+				certantyChecker++;
+				tempMean += std;	
 			}
-			else
+
+			boundary1 = probFinder(certantyChecker);
+			certantyChecker = 0;
+			tempMean = mean;
+			while(tempMean > -FourtyFiveDegrees && certantyChecker < 20)
 			{
-				while(mean > -FourtyFiveDegrees)
-				{
-					certantyChecker++;
-					mean -= std;
-				}
+				certantyChecker++;
+				tempMean -= std;
 			}
+			boundary2 = probFinder(certantyChecker);
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", boundary1, boundary2, 100 - boundary1 - boundary2);
 			
 		}
-		warpPrint("Assuming normal distribution which can be jugded with the skew and kurtosis: \n");
-		switch (certantyChecker)
-		{
-		case 1:
-			warpPrint("Probability of being next closest state <  0.317 \n");	
-			break;
-		case 2:
-			warpPrint("Probability of being next closest state <  0.0455 \n");	
-			break;
-		case 3:
-			warpPrint("Probability of being next closest state < 0.00270 \n");	
-			break;
-		case 4:
-			warpPrint("Probability of being next closest state <  0.0000633 \n");	
-			break;
-		case 5:
-			warpPrint("Probability of being next closest state =  0.000000573 \n");	
-			break;
-		default:
-			warpPrint("Probability of being next closest state =  0.00000000197 \n");	
-			break;		
-		}
+		
+		warpPrint("\r\tSIM->SCGC6=0x%02x\t\tRTC->SR=0x%02x\t\tRTC->TSR=0x%02x\n", SIM->SCGC6, RTC->SR, RTC->TSR); // Need to do testing on this line
 		warpPrint("\n");
 		
 	}

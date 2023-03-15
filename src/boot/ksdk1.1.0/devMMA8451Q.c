@@ -409,3 +409,62 @@ returnZAccMMA8451Q()
 		return readSensorRegisterValueCombined;
 	}
 }
+
+uint8_t		
+probFinder(uint8_t stdCount)
+{
+	switch (stdCount)
+		{
+		case 1:
+			return 46;	
+			break;
+		case 2:
+			return 43;
+			break;
+		case 3:
+			return 38;	
+			break;
+		case 4:
+			return 35;	
+			break;
+		case 5:
+			return 31;	
+			break;
+		case 6:
+			return 27;	
+			break;
+		case 7:
+			return 22;	
+			break;
+		case 8:
+			return 21;	
+			break;
+		case 9:
+			return 18;	
+			break;
+		case 10:
+			return 16;
+			break;
+		case 11:
+			return 14;	
+			break;
+		case 12:
+			return 12;	
+			break;
+		case 13:
+			return 10;	
+			break;
+		case 14:
+			return 8;	
+			break;
+		case 15:
+			return 7;	
+			break;
+		case 16:
+			return 5;	
+			break;
+		default:
+			return 4;	
+			break;
+		}	
+}
