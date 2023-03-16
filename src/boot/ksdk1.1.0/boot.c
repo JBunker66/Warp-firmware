@@ -1874,7 +1874,7 @@ main(void)
 	int64_t fourthSum;
 	int64_t stdTemp;
 	int32_t milliKS;
-	uint32_t time1, time2, time3;
+	uint32_t time1, time2;
 
 	while(1) 
 	{	
@@ -1989,12 +1989,12 @@ main(void)
 				tempMean -= std;
 			}
 			boundary2 = probFinder(certantyChecker);
-			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", 100 - boundary1 - boundary2, boundary1, boundary2);
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", boundary1, 100 - boundary1 - boundary2, boundary2);
 			
 		}
-		
-		warpPrint("\r\tSIM->SCGC6=0x%02x\t\tRTC->SR=0x%02x\t\tRTC->TSR=0x%02x\n", SIM->SCGC6, RTC->SR, RTC->TSR); // Need to do testing on this line
-		warpPrint("\n"); // TSR is the important one. Need more research 
+		time2 = RTC->TSR;
+		warpPrint("Time taken in seconds for the data gathering and classification: %d \n",time2-time1);
+		warpPrint("\n");
 		
 	}
 	while (1)
