@@ -1861,8 +1861,7 @@ main(void)
 
 	devSSD1331init();
 	configureSensorMMA8451Q(payloadF_SETUP, payloadCTRL_REG1, payloadXYZ_DATA_CFG);
-	//devSSD1331Green();
-	int16_t dataArray[64]; // Want to have as large as possible 
+	int16_t dataArray[64];
 	int16_t mean = 0;
 	int16_t tempMean;
 	int16_t std = 0;
