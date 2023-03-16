@@ -1888,7 +1888,7 @@ main(void)
 		for(size_t i = 0; i < 64; i++)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
-			warpPrint("%d,", dataArray[i]/4); // Comment/Uncomment to see raw data
+			// warpPrint("%d,", dataArray[i]/4); // Comment/Uncomment to see raw data
 			meanSum += dataArray[i];
 			OSA_TimeDelay(50); // Can change delay
 		}
