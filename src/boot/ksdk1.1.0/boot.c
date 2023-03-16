@@ -1874,16 +1874,19 @@ main(void)
 	int64_t fourthSum;
 	int64_t stdTemp;
 	int32_t milliKS;
+	uint32_t time1, time2, time3;
 
 	while(1) 
 	{	
+		time1 = RTC->TSR;
+		warpPrint("Time 1: %d", time1);
 		meanSum = 0;
 		certantyChecker = 0;
 		cubedSum = 0;
 		fourthSum = 0;
 		milliKS = 0;
 		warpPrint("\n");
-		for(size_t i = 0; i < 64; i++) // boundary is 2828 (45 degrees)
+		for(size_t i = 0; i < 64; i++)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
 			warpPrint("%d,", dataArray[i]); // Comment/Uncomment to see raw data
@@ -1937,7 +1940,8 @@ main(void)
 				tempMean -= std;
 			}
 			boundary2 = probFinder(certantyChecker);
-			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", 100 - boundary1, boundary1 - boundary2, boundary2);
+			if(boundary2 == boundary1){boundary2 = 0;} // Needed due to the fact 4% is any probability below 4%
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", 100 - boundary1 - boundary2, boundary1, boundary2);
 		}
 
 		// Red bound
@@ -1959,8 +1963,8 @@ main(void)
 				tempMean += std;
 			}
 			boundary2 = probFinder(certantyChecker);
-
-			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", boundary2, boundary1 - boundary2, 100 - boundary1);
+			if(boundary2 == boundary1){boundary2 = 0;} // Needed due to the fact 4% is any probability below 4%
+			warpPrint("Probability Green: %d %%, Probability Orange: %d %%, Probability Red: %d %% \n", boundary2, boundary1, 100 - boundary1 - boundary2);
 		}
 
 		// Orange bound
@@ -1990,7 +1994,7 @@ main(void)
 		}
 		
 		warpPrint("\r\tSIM->SCGC6=0x%02x\t\tRTC->SR=0x%02x\t\tRTC->TSR=0x%02x\n", SIM->SCGC6, RTC->SR, RTC->TSR); // Need to do testing on this line
-		warpPrint("\n");
+		warpPrint("\n"); // TSR is the important one. Need more research 
 		
 	}
 	while (1)
