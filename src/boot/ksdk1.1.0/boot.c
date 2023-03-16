@@ -1879,7 +1879,6 @@ main(void)
 	while(1) 
 	{	
 		time1 = RTC->TSR;
-		warpPrint("Time 1: %d", time1);
 		meanSum = 0;
 		certantyChecker = 0;
 		cubedSum = 0;
@@ -1889,13 +1888,13 @@ main(void)
 		for(size_t i = 0; i < 64; i++)
 		{
 			dataArray[i] = returnZAccMMA8451Q();
-			warpPrint("%d,", dataArray[i]); // Comment/Uncomment to see raw data
+			warpPrint("%d,", dataArray[i]/4); // Comment/Uncomment to see raw data
 			meanSum += dataArray[i];
-			OSA_TimeDelay(50);
+			OSA_TimeDelay(50); // Can change delay
 		}
 		warpPrint("\n");
 		mean = (int16_t)floor(meanSum/64);
-		warpPrint("Mean = %d \n", mean);
+		warpPrint("Mean = %d \n", mean/4);
 		stdSum = 0;
 		for(size_t i = 0; i < 64; i++)
 		{
@@ -1905,7 +1904,7 @@ main(void)
 			fourthSum += (int64_t)floor(stdTemp*stdTemp*stdTemp*stdTemp/64);
 		}
 		std = (int16_t)floor(sqrt(stdSum/(63*16*16)));
-		warpPrint("Standard devation = %d \n", std);
+		warpPrint("Standard devation = %d \n", std/4);
 
 		stdTemp = (int64_t)floor(sqrt(stdSum));
 		stdTemp = stdTemp*stdTemp*stdTemp;
